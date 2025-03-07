@@ -15,7 +15,7 @@ class Solution {
 public:
     int getImportance(vector<Employee*> employees, int id) {
         unordered_map<int, Employee*> emap;
-        unordered_map<int, int> visited;
+        // unordered_map<int, int> visited;
 
         for (auto& emp : employees) {
             emap[emp->id] = emp;
@@ -24,7 +24,7 @@ public:
         int total = 0;
         queue<int> q;
         q.push(id);
-        visited[id] = 1;
+        // visited[id] = 1;
 
         while (!q.empty()) {
             int node = q.front();
@@ -32,10 +32,10 @@ public:
             q.pop();
 
             for (auto& neighbour : emap[node]->subordinates) {
-                if (!visited[neighbour]) {
-                    visited[neighbour]=1;
+                // if (!visited[neighbour]) {
+                //     visited[neighbour]=1;
                     q.push(neighbour);
-                }
+                // }
             }
         }
 
