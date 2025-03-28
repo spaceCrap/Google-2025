@@ -1,54 +1,50 @@
 class Solution {
 public:
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
-       int n = numCourses;
-       unordered_map<int, vector<int>> adjList;
+
+        unordered_map<int, vector<int>> adjList;
         vector<int> indegree(numCourses,0);
-         queue<int> q;
+        queue<int> q;
+        
 
-       for(int i=0;i<prerequisites.size();i++)
-       {
-        int a = prerequisites[i][1];
-        int b = prerequisites[i][0];
-        adjList[a].push_back(b);
-        indegree[b]++;
-
-
-       }
-
-      
-      
-       for(int i = 0 ; i<n;i++)
-       {
-        if(indegree[i]==0)
+        for(auto preq : prerequisites)
         {
-            q.push(i);
+            int a = preq[1];
+            int b= preq[0];
+            adjList[a].push_back(b);
+            indegree[b]++;
         }
-       }
-       int cnt = 0;
 
-       while(!q.empty())
-       {
-        int top = q.front();
-        q.pop();
-        cnt++;
-
-        for(auto neighbour: adjList[top])
+        for(int i =0;i<numCourses;i++)
         {
-            indegree[neighbour]--;
-            if( indegree[neighbour] == 0)
+            if(indegree[i]==0)
             {
-                q.push(neighbour);
+                q.push(i);
             }
         }
 
-       }
+        int topoCnt=0;
+        while(!q.empty())
+        {
+            int node = q.front();
+            q.pop();
+            topoCnt++;
 
-       if(cnt==numCourses)
-       {
-        return true;
-       }
-       return false;
+            for(auto& neighbour:adjList[node] )
+            {
+                indegree[neighbour]--;
+                if( indegree[neighbour]==0)
+                {
+                    q.push(neighbour);
+                }
+            }
+        }
+
+        if(topoCnt == numCourses)
+        {
+            return true;
+        }
+        else return false;
         
     }
 };
