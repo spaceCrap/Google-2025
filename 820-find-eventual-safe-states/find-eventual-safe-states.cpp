@@ -1,54 +1,48 @@
 class Solution {
-
-    private:
-    bool dfs(vector<vector<int>>& graph,  vector<int>& visited,
-      vector<int>& pathVisited, int node)
-      {
-        visited[node] =1;
-        pathVisited[node]=1;
-
-        for(auto& neighbour: graph[node])
+public:
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        unordered_map<int, vector<int>> reverseList;
+        int n = graph.size();
+        vector<int> indegree(n,0);
+         queue<int> q;
+         vector<int> result;
+        
+        for(int i=0;i<n;i++)
         {
-            if(!visited[neighbour])
+
+           for(auto neighbour: graph[i])
+           {
+            reverseList[neighbour].push_back(i);
+            indegree[i]++;
+           }
+        }
+
+       
+        for(int i=0;i<n;i++)
+        {
+            if(indegree[i]==0)
             {
-                if(dfs(graph,visited,pathVisited, neighbour)==false)
+                q.push(i);
+            }
+        }
+
+        while(!q.empty())
+        {
+            int node = q.front();
+            q.pop();
+            result.push_back(node);
+
+            for(auto& neighbour: reverseList[node])
+            {
+                indegree[neighbour]--;
+                if(indegree[neighbour]==0)
                 {
-                    return false;
+                    q.push(neighbour);
                 }
             }
-            else if(visited[neighbour] && pathVisited[neighbour])
-            {
-                return false;
-            }
-        }
-        pathVisited[node]=0;
-        return true;
-      }
-     
-public:
-
-    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
-        int n=graph.size();
-        vector<int> visited(n,0);
-        vector<int> pathVisited(n,0);
-        vector<int> result;
-
-        for(int i=0;i<n;i++)
-        {
-            if(!visited[i])
-            {
-                dfs(graph, visited, pathVisited, i);
-            }
         }
 
-        for(int i=0;i<n;i++)
-        {
-            if(pathVisited[i]==0)
-            {
-                result.push_back(i);
-            }
-        }
-
+        sort(result.begin(),result.end());
         return result;
         
     }
